@@ -13,5 +13,8 @@
   "bugs": {
     "url": "https://github.com/ventinus/savnac-breakpoint/issues"
   },
-  "homepage": "https://github.com/ventinus/savnac-breakpoint#readme"
+  "homepage": "https://github.com/ventinus/savnac-breakpoint#readme",
+  "dependencies": {
+    "savnac-utils": "https://github.com/ventinus/savnac-utils"
+  }
 }
