@@ -1,0 +1,17 @@
+{
+  "name": "savnac-breakpoint",
+  "version": "1.0.0",
+  "description": "savnac breakpoint functionality",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ventinus/savnac-breakpoint.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ventinus/savnac-breakpoint/issues"
+  },
+  "homepage": "https://github.com/ventinus/savnac-breakpoint#readme"
+}
