@@ -1,2 +1,2 @@
 import {mobileRE, throttle} from 'savnac-utils';
-export const breakpoint = `i am breakpoint ${mobileRE.test('asdf')}`
+export default `i am breakpoint ${mobileRE.test('asdf')}`
