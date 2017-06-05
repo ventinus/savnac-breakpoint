@@ -114,12 +114,14 @@ const breakpoint = () => {
     cbs.resizeHandler = throttle(onResize, 100)
 
     window.addEventListener('resize', cbs.resizeHandler)
+    props.isEnabled = true
   }
 
   const disable = () => {
     if (!props.isEnabled) return
 
     window.removeEventListener('resize', cbs.resizeHandler)
+    props.isEnabled = false
   }
 
   return {
