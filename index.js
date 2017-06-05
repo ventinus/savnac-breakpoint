@@ -66,13 +66,15 @@ const breakpoint = () => {
   //   }
   // }
   // ------------------------------------------------
-  const addModule = (module) => {
+  const addModule = (mod) => {
     props.modules = {
       ...props.modules,
-      ...module
+      ...mod
     }
 
-    if (!!module[props.currentBreakpoint]) module[props.currentBreakpoint]()
+    Object.keys(mod).forEach(m => {
+      if (!!mod[m][props.currentBreakpoint]) mod[m][props.currentBreakpoint]()
+    })
   }
 
   // ------------------------------------------------
