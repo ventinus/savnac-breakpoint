@@ -42,7 +42,10 @@ const breakpoint = () => {
     return isBreakpoint(SIZES.sm) || isBreakpoint(SIZES.md)
   }
 
-  const isBreakpoint = bp => props.currentBreakpoint === bp
+  // ------------------------------------------------
+  // checks if the currentBreakpoint is whatever is passed
+  // ------------------------------------------------
+  function isBreakpoint (bp) { return props.currentBreakpoint === bp }
 
   // ------------------------------------------------
   // Tests for mobile device. returns a boolean.
