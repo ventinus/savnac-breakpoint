@@ -7,6 +7,13 @@
 
 import {mobileRE, throttle, omit} from 'savnac-utils'
 
+const SIZES = {
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+  xl: 'xl'
+}
+
 const breakpoint = () => {
   let props = {
     modules: {},
@@ -32,7 +39,7 @@ const breakpoint = () => {
   // checks if the currentBreakpoint is 'sm' or 'md'. returns a boolean
   // ------------------------------------------------
   function checkMobileBp () {
-    return isBreakpoint('sm') || isBreakpoint('md')
+    return isBreakpoint(SIZES.sm) || isBreakpoint(SIZES.md)
   }
 
   const isBreakpoint = bp => props.currentBreakpoint === bp
@@ -123,13 +130,13 @@ const breakpoint = () => {
     runResponsive,
     enable,
     addModule,
+    isMobileDevice: props.isMobileDevice,
     isMobile: () => props.isMobile,
     currentBreakpoint: () => props.currentBreakpoint,
-    isMobileDevice: props.isMobileDevice,
-    isSmall: () => isBreakpoint('sm'),
-    isMedium: () => isBreakpoint('md'),
-    isLarge: () => isBreakpoint('lg'),
-    isXL: () => isBreakpoint('xl')
+    isSmall: () => isBreakpoint(SIZES.sm),
+    isMedium: () => isBreakpoint(SIZES.md),
+    isLarge: () => isBreakpoint(SIZES.lg),
+    isXL: () => isBreakpoint(SIZES.xl)
   }
 }
 
