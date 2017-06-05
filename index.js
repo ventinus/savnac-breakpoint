@@ -10,10 +10,14 @@ import {mobileRE, throttle, omit} from 'savnac-utils'
 const breakpoint = () => {
   let props = {
     modules: {},
-    currentBreakpoint: checkBreakpoint(),
-    isMobile: checkMobileBp(),
-    isMobileDevice: checkMobileDevice()
+    currentBreakpoint: null,
+    isMobile: null,
+    isMobileDevice: null
   }
+
+  props.currentBreakpoint = checkBreakpoint()
+  props.isMobile = checkMobileBp()
+  props.isMobileDevice = checkMobileDevice()
 
   let cbs = {}
 
