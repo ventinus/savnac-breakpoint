@@ -32,8 +32,10 @@ const breakpoint = () => {
   // checks if the currentBreakpoint is 'sm' or 'md'. returns a boolean
   // ------------------------------------------------
   function checkMobileBp () {
-    return props.currentBreakpoint === 'sm' || props.currentBreakpoint === 'md'
+    return isBreakpoint('sm') || isBreakpoint('md')
   }
+
+  const isBreakpoint = bp => props.currentBreakpoint === bp
 
   // ------------------------------------------------
   // Tests for mobile device. returns a boolean.
@@ -123,7 +125,11 @@ const breakpoint = () => {
     addModule,
     isMobile: () => props.isMobile,
     currentBreakpoint: () => props.currentBreakpoint,
-    isMobileDevice: props.isMobileDevice
+    isMobileDevice: props.isMobileDevice,
+    isSmall: () => isBreakpoint('sm'),
+    isMedium: () => isBreakpoint('md'),
+    isLarge: () => isBreakpoint('lg'),
+    isXL: () => isBreakpoint('xl')
   }
 }
 
