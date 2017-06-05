@@ -53,16 +53,6 @@ const breakpoint = () => {
   function checkMobileDevice () { return mobileRE.test(navigator.userAgent) }
 
   // ------------------------------------------------
-  // ------------------------------------------------
-  const updateProps = () => {
-    props = {
-      ...props,
-      currentBreakpoint: checkBreakpoint(),
-      isMobile: checkMobileBp()
-    }
-  }
-
-  // ------------------------------------------------
   // Merges a new module into the modules. module argument is an object with the key being the
   // module name and the value is an object with keys of the breakpiont strings and their callbacks.
   // It subsequently runs the responsive callback of the newly added module.
@@ -112,8 +102,8 @@ const breakpoint = () => {
 
     if (newBreakpoint !== props.currentBreakpoint) {
       props.currentBreakpoint = newBreakpoint
+      props.isMobile = checkMobileBp()
       runResponsive()
-      updateProps()
     }
 
     return
