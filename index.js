@@ -54,9 +54,12 @@ const breakpoint = () => {
 
   // ------------------------------------------------
   // ------------------------------------------------
-  const setGlobalVars = () => {
-    props.currentBreakpoint = checkBreakpoint()
-    props.isMobile = checkMobileBp()
+  const updateProps = () => {
+    props = {
+      ...props,
+      currentBreakpoint: checkBreakpoint(),
+      isMobile: checkMobileBp()
+    }
   }
 
   // ------------------------------------------------
@@ -110,7 +113,7 @@ const breakpoint = () => {
     if (newBreakpoint !== props.currentBreakpoint) {
       props.currentBreakpoint = newBreakpoint
       runResponsive()
-      setGlobalVars()
+      updateProps()
     }
 
     return
