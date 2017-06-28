@@ -25,6 +25,7 @@ const breakpoint = () => {
   props.currentBreakpoint = checkBreakpoint()
   props.isMobile = checkMobileBp()
   props.isMobileDevice = checkMobileDevice()
+  document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch')
 
   let cbs = {}
 
