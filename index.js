@@ -68,10 +68,10 @@ const breakpoint = () => {
   // }
   // ------------------------------------------------
   const addModule = (mod) => {
-    props.modules = {
-      ...props.modules,
-      ...mod
-    }
+    props.modules = Object.assign({},
+      props.modules,
+      mod
+    )
 
     Object.keys(mod).forEach(m => {
       if (!!mod[m][props.currentBreakpoint]) mod[m][props.currentBreakpoint]()
@@ -131,6 +131,8 @@ const breakpoint = () => {
     runResponsive,
     enable,
     addModule,
+    disable,
+    removeModule,
     isMobileDevice: props.isMobileDevice,
     isMobile: () => props.isMobile,
     currentBreakpoint: () => props.currentBreakpoint,
