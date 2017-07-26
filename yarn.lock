@@ -650,7 +650,7 @@ lazy-cache@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-1.0.4.tgz#a1d78fc3a50474cb80845d3b3b6e1da49a446e8e"
 
-lodash@^4.2.0:
+lodash@^4.17.4, lodash@^4.2.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -803,9 +803,9 @@ rollup@0.41:
   dependencies:
     source-map-support "^0.4.0"
 
-"savnac-utils@https://github.com/ventinus/savnac-utils":
-  version "1.1.7"
-  resolved "https://github.com/ventinus/savnac-utils#13bd3cc22909b3010e9d16f65e7e20d9d1901f07"
+savnac-utils@^1.1.13:
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/savnac-utils/-/savnac-utils-1.1.13.tgz#ce4305effb8fe2b9625d64484735228e6a35eae1"
 
 slash@^1.0.0:
   version "1.0.0"
