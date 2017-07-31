@@ -804,8 +804,8 @@ rollup@0.41:
     source-map-support "^0.4.0"
 
 savnac-utils@^1.1.13:
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/savnac-utils/-/savnac-utils-1.1.13.tgz#ce4305effb8fe2b9625d64484735228e6a35eae1"
+  version "1.1.17"
+  resolved "https://registry.yarnpkg.com/savnac-utils/-/savnac-utils-1.1.17.tgz#1dac1ebe4eaa924bdc837e8d0031a5ef92af75c6"
 
 slash@^1.0.0:
   version "1.0.0"
