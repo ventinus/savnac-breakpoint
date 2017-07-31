@@ -1,6 +1,6 @@
 {
   "name": "savnac-breakpoint",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "savnac breakpoint functionality",
   "main": "build/savnac-breakpoint.js",
   "module": "index",

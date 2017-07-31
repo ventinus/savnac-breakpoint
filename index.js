@@ -4,8 +4,7 @@
 // Requires css setup to set content of 'sm', 'md', 'lg', 'xl' on body :before
 //
 // ==================================================
-import {throttle} from 'lodash'
-import {mobileRE, omit} from 'savnac-utils'
+import {mobileRE, omit, throttle} from 'savnac-utils'
 
 const SIZES = {
   sm: 'sm',
