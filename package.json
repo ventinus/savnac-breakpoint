@@ -18,7 +18,7 @@
     "url": "https://github.com/ventinus/savnac-breakpoint/issues"
   },
   "homepage": "https://github.com/ventinus/savnac-breakpoint#readme",
-  "peerDependencies": {
+  "dependencies": {
     "lodash.debounce": "^4.0.8",
     "wolfy87-eventemitter": "^5.2.4"
   },
