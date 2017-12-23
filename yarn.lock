@@ -650,7 +650,7 @@ lazy-cache@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-1.0.4.tgz#a1d78fc3a50474cb80845d3b3b6e1da49a446e8e"
 
-lodash@^4.17.4, lodash@^4.2.0:
+lodash@^4.2.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -802,10 +802,6 @@ rollup@0.41:
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.41.6.tgz#e0d05497877a398c104d816d2733a718a7a94e2a"
   dependencies:
     source-map-support "^0.4.0"
-
-savnac-utils@^1.1.13:
-  version "1.1.17"
-  resolved "https://registry.yarnpkg.com/savnac-utils/-/savnac-utils-1.1.17.tgz#1dac1ebe4eaa924bdc837e8d0031a5ef92af75c6"
 
 slash@^1.0.0:
   version "1.0.0"

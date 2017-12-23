@@ -4,96 +4,83 @@
 // Requires css setup to set content of 'sm', 'md', 'lg', 'xl' on body :before
 //
 // ==================================================
-import {mobileRE, omit, throttle} from 'savnac-utils'
-
-const SIZES = {
-  sm: 'sm',
-  md: 'md',
-  lg: 'lg',
-  xl: 'xl'
-}
+const debounce = require('lodash.debounce')
+const EventEmitter = require('wolfy87-eventemitter')
 
 const breakpoint = () => {
-  let props = {
-    modules: {},
-    currentBreakpoint: null,
+  const props = {
+    currentBreakpoint: checkBreakpoint(),
     isMobile: null,
-    isMobileDevice: null
+    isMobileDevice: 'ontouchstart' in window,
+    ee: new EventEmitter()
   }
 
-  props.currentBreakpoint = checkBreakpoint()
-  props.isMobile = checkMobileBp()
-  props.isMobileDevice = checkMobileDevice()
-  document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch')
+  const SIZES = {
+    sm: 'sm',
+    md: 'md',
+    lg: 'lg',
+    xl: 'xl'
+  }
 
-  let cbs = {}
+  const eeEvents = [
+    'change',
+    ...Object.keys(SIZES).map(s => `${s}Enter`),
+    ...Object.keys(SIZES).map(s => `${s}Exit`)
+  ]
+
+  const cbs = {}
+
+  props.isMobile = checkMobileBp()
+  document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch')
 
   // ------------------------------------------------
   // grabs the document body :before pseudo element content.
   // ------------------------------------------------
-  function checkBreakpoint () {
+  function checkBreakpoint() {
     return window.getComputedStyle(document.body, ':before').getPropertyValue('content').replace(/"/g, '')
   }
 
   // ------------------------------------------------
   // checks if the currentBreakpoint is 'sm' or 'md'. returns a boolean
   // ------------------------------------------------
-  function checkMobileBp () {
+  function checkMobileBp() {
     return isBreakpoint(SIZES.sm) || isBreakpoint(SIZES.md)
   }
 
   // ------------------------------------------------
   // checks if the currentBreakpoint is whatever is passed
   // ------------------------------------------------
-  function isBreakpoint (bp) { return props.currentBreakpoint === bp }
+  function isBreakpoint(bp) { return props.currentBreakpoint === bp }
 
   // ------------------------------------------------
-  // Tests for mobile device. returns a boolean.
+  // Emits change, enter, and exit events. Updates props with new breakpoint data
   // ------------------------------------------------
-  function checkMobileDevice () { return mobileRE.test(navigator.userAgent) }
-
-  // ------------------------------------------------
-  // Merges a new module into the modules. module argument is an object with the key being the
-  // module name and the value is an object with keys of the breakpiont strings and their callbacks.
-  // It subsequently runs the responsive callback of the newly added module.
-  // eg:
-  // module = {
-  //   nav: {
-  //     sm: function,
-  //     md: function,
-  //     lg: function,
-  //     xl: function
-  //   }
-  // }
-  // ------------------------------------------------
-  const addModule = (mod) => {
-    props.modules = Object.assign({},
-      props.modules,
-      mod
-    )
-
-    Object.keys(mod).forEach(m => {
-      if (!!mod[m][props.currentBreakpoint]) mod[m][props.currentBreakpoint]()
-    })
+  const change = newBreakpoint => {
+    props.ee.emitEvent('change')
+    props.ee.emitEvent(`${props.currentBreakpoint}Exit`)
+    props.ee.emitEvent(`${newBreakpoint}Enter`)
+    props.currentBreakpoint = newBreakpoint
+    props.isMobile = checkMobileBp()
   }
 
-  // ------------------------------------------------
-  // Removes the modules from props modules. moduleName argument is a string to reference key
-  // ------------------------------------------------
-  const removeModule = moduleName => {
-    props.modules = omit(props.modules, moduleName)
-  }
-
-  // ------------------------------------------------
-  // Loop through the modules and run the callback for the current breakpoint (if it exists)
-  // ------------------------------------------------
-  const runResponsive = () => {
-    let { modules, currentBreakpoint } = props
-    for (let key in modules) {
-      if (modules.hasOwnProperty(key) && !!modules[key][currentBreakpoint]) {
-        modules[key][currentBreakpoint]()
-      }
+  const on = (listener, callback) => {
+    if (eeEvents.includes(listener)) {
+      props.ee.addListener(listener, callback)
+    } else {
+      logListenerError(listener)
     }
+  }
+
+  const off = (listener, callback) => {
+    if (eeEvents.includes(listener)) {
+      props.ee.removeListener(listener, callback)
+    } else {
+      logListenerError(listener)
+    }
+  }
+
+  const logListenerError = listener => {
+    console.error(`${listener} is not a valid listener. Options are ${eeEvents.join(', ')}`)
   }
 
   // ------------------------------------------------
@@ -103,19 +90,17 @@ const breakpoint = () => {
     const newBreakpoint = checkBreakpoint()
 
     if (newBreakpoint !== props.currentBreakpoint) {
-      props.currentBreakpoint = newBreakpoint
-      props.isMobile = checkMobileBp()
-      runResponsive()
+      change(newBreakpoint)
     }
-
-    return
   }
 
   const enable = () => {
     if (props.isEnabled) return
-    cbs.resizeHandler = throttle(onResize, 100)
+    cbs.resizeHandler = debounce(onResize, 100)
 
     window.addEventListener('resize', cbs.resizeHandler)
+    props.ee.emitEvent(`${props.currentBreakpoint}Enter`)
+
     props.isEnabled = true
   }
 
@@ -127,11 +112,10 @@ const breakpoint = () => {
   }
 
   return {
-    runResponsive,
     enable,
-    addModule,
     disable,
-    removeModule,
+    on,
+    off,
     isMobileDevice: props.isMobileDevice,
     isMobile: () => props.isMobile,
     currentBreakpoint: () => props.currentBreakpoint,

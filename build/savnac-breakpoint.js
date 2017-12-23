@@ -4,7 +4,15 @@
 	(factory());
 }(this, (function () { 'use strict';
 
-var savnacUtils = require('savnac-utils');
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
 
 // ==================================================
 //
@@ -12,27 +20,34 @@ var savnacUtils = require('savnac-utils');
 // Requires css setup to set content of 'sm', 'md', 'lg', 'xl' on body :before
 //
 // ==================================================
-var SIZES = {
-  sm: 'sm',
-  md: 'md',
-  lg: 'lg',
-  xl: 'xl'
-};
+var debounce = require('lodash.debounce');
+var EventEmitter = require('wolfy87-eventemitter');
 
 var breakpoint = function breakpoint() {
   var props = {
-    modules: {},
-    currentBreakpoint: null,
+    currentBreakpoint: checkBreakpoint(),
     isMobile: null,
-    isMobileDevice: null
+    isMobileDevice: 'ontouchstart' in window,
+    ee: new EventEmitter()
   };
 
-  props.currentBreakpoint = checkBreakpoint();
-  props.isMobile = checkMobileBp();
-  props.isMobileDevice = checkMobileDevice();
-  document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch');
+  var SIZES = {
+    sm: 'sm',
+    md: 'md',
+    lg: 'lg',
+    xl: 'xl'
+  };
+
+  var eeEvents = ['change'].concat(toConsumableArray(Object.keys(SIZES).map(function (s) {
+    return s + 'Enter';
+  })), toConsumableArray(Object.keys(SIZES).map(function (s) {
+    return s + 'Exit';
+  })));
 
   var cbs = {};
+
+  props.isMobile = checkMobileBp();
+  document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch');
 
   // ------------------------------------------------
   // grabs the document body :before pseudo element content.
@@ -56,53 +71,34 @@ var breakpoint = function breakpoint() {
   }
 
   // ------------------------------------------------
-  // Tests for mobile device. returns a boolean.
+  // Emits change, enter, and exit events. Updates props with new breakpoint data
   // ------------------------------------------------
-  function checkMobileDevice() {
-    return savnacUtils.mobileRE.test(navigator.userAgent);
-  }
-
-  // ------------------------------------------------
-  // Merges a new module into the modules. module argument is an object with the key being the
-  // module name and the value is an object with keys of the breakpiont strings and their callbacks.
-  // It subsequently runs the responsive callback of the newly added module.
-  // eg:
-  // module = {
-  //   nav: {
-  //     sm: function,
-  //     md: function,
-  //     lg: function,
-  //     xl: function
-  //   }
-  // }
-  // ------------------------------------------------
-  var addModule = function addModule(mod) {
-    props.modules = Object.assign({}, props.modules, mod);
-
-    Object.keys(mod).forEach(function (m) {
-      if (!!mod[m][props.currentBreakpoint]) mod[m][props.currentBreakpoint]();
-    });
+  var change = function change(newBreakpoint) {
+    props.ee.emitEvent('change');
+    props.ee.emitEvent(props.currentBreakpoint + 'Exit');
+    props.ee.emitEvent(newBreakpoint + 'Enter');
+    props.currentBreakpoint = newBreakpoint;
+    props.isMobile = checkMobileBp();
   };
 
-  // ------------------------------------------------
-  // Removes the modules from props modules. moduleName argument is a string to reference key
-  // ------------------------------------------------
-  var removeModule = function removeModule(moduleName) {
-    props.modules = savnacUtils.omit(props.modules, moduleName);
-  };
-
-  // ------------------------------------------------
-  // Loop through the modules and run the callback for the current breakpoint (if it exists)
-  // ------------------------------------------------
-  var runResponsive = function runResponsive() {
-    var modules = props.modules,
-        currentBreakpoint = props.currentBreakpoint;
-
-    for (var key in modules) {
-      if (modules.hasOwnProperty(key) && !!modules[key][currentBreakpoint]) {
-        modules[key][currentBreakpoint]();
-      }
+  var on = function on(listener, callback) {
+    if (eeEvents.includes(listener)) {
+      props.ee.addListener(listener, callback);
+    } else {
+      logListenerError(listener);
     }
+  };
+
+  var off = function off(listener, callback) {
+    if (eeEvents.includes(listener)) {
+      props.ee.removeListener(listener, callback);
+    } else {
+      logListenerError(listener);
+    }
+  };
+
+  var logListenerError = function logListenerError(listener) {
+    console.error(listener + ' is not a valid listener. Options are ' + eeEvents.join(', '));
   };
 
   // ------------------------------------------------
@@ -112,19 +108,17 @@ var breakpoint = function breakpoint() {
     var newBreakpoint = checkBreakpoint();
 
     if (newBreakpoint !== props.currentBreakpoint) {
-      props.currentBreakpoint = newBreakpoint;
-      props.isMobile = checkMobileBp();
-      runResponsive();
+      change(newBreakpoint);
     }
-
-    return;
   };
 
   var enable = function enable() {
     if (props.isEnabled) return;
-    cbs.resizeHandler = savnacUtils.throttle(onResize, 100);
+    cbs.resizeHandler = debounce(onResize, 100);
 
     window.addEventListener('resize', cbs.resizeHandler);
+    props.ee.emitEvent(props.currentBreakpoint + 'Enter');
+
     props.isEnabled = true;
   };
 
@@ -136,11 +130,10 @@ var breakpoint = function breakpoint() {
   };
 
   return {
-    runResponsive: runResponsive,
     enable: enable,
-    addModule: addModule,
     disable: disable,
-    removeModule: removeModule,
+    on: on,
+    off: off,
     isMobileDevice: props.isMobileDevice,
     isMobile: function isMobile() {
       return props.isMobile;

@@ -1,6 +1,6 @@
 {
   "name": "savnac-breakpoint",
-  "version": "1.0.13",
+  "version": "2.0.0",
   "description": "savnac breakpoint functionality",
   "main": "build/savnac-breakpoint.js",
   "module": "index",
@@ -18,9 +18,9 @@
     "url": "https://github.com/ventinus/savnac-breakpoint/issues"
   },
   "homepage": "https://github.com/ventinus/savnac-breakpoint#readme",
-  "dependencies": {
-    "lodash": "^4.17.4",
-    "savnac-utils": "^1.1.13"
+  "peerDependencies": {
+    "lodash.debounce": "^4.0.8",
+    "wolfy87-eventemitter": "^5.2.4"
   },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
