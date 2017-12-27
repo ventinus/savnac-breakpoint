@@ -4,16 +4,6 @@
 	(factory());
 }(this, (function () { 'use strict';
 
-var toConsumableArray = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
-};
-
 // ==================================================
 //
 // Breakpoint Utility
@@ -38,11 +28,7 @@ var breakpoint = function breakpoint() {
     xl: 'xl'
   };
 
-  var eeEvents = ['change'].concat(toConsumableArray(Object.keys(SIZES).map(function (s) {
-    return s + 'Enter';
-  })), toConsumableArray(Object.keys(SIZES).map(function (s) {
-    return s + 'Exit';
-  })));
+  var eeEvents = ['change'];
 
   var cbs = {};
 
@@ -74,9 +60,11 @@ var breakpoint = function breakpoint() {
   // Emits change, enter, and exit events. Updates props with new breakpoint data
   // ------------------------------------------------
   var change = function change(newBreakpoint) {
-    props.ee.emitEvent('change');
-    props.ee.emitEvent(props.currentBreakpoint + 'Exit');
-    props.ee.emitEvent(newBreakpoint + 'Enter');
+    props.ee.emitEvent('change', [{
+      newBreakpoint: newBreakpoint,
+      previousBreakpoint: props.currentBreakpoint
+    }]);
+
     props.currentBreakpoint = newBreakpoint;
     props.isMobile = checkMobileBp();
   };
@@ -117,7 +105,10 @@ var breakpoint = function breakpoint() {
     cbs.resizeHandler = debounce(onResize, 100);
 
     window.addEventListener('resize', cbs.resizeHandler);
-    props.ee.emitEvent(props.currentBreakpoint + 'Enter');
+    props.ee.emitEvent('change', [{
+      newBreakpoint: props.currentBreakpoint,
+      previousBreakpoint: null
+    }]);
 
     props.isEnabled = true;
   };
