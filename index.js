@@ -22,11 +22,7 @@ const breakpoint = () => {
     xl: 'xl'
   }
 
-  const eeEvents = [
-    'change',
-    ...Object.keys(SIZES).map(s => `${s}Enter`),
-    ...Object.keys(SIZES).map(s => `${s}Exit`)
-  ]
+  const eeEvents = ['change']
 
   const cbs = {}
 
@@ -56,9 +52,11 @@ const breakpoint = () => {
   // Emits change, enter, and exit events. Updates props with new breakpoint data
   // ------------------------------------------------
   const change = newBreakpoint => {
-    props.ee.emitEvent('change')
-    props.ee.emitEvent(`${props.currentBreakpoint}Exit`)
-    props.ee.emitEvent(`${newBreakpoint}Enter`)
+    props.ee.emitEvent('change', [{
+      newBreakpoint,
+      previousBreakpoint: props.currentBreakpoint
+    }])
+
     props.currentBreakpoint = newBreakpoint
     props.isMobile = checkMobileBp()
   }
@@ -99,7 +97,10 @@ const breakpoint = () => {
     cbs.resizeHandler = debounce(onResize, 100)
 
     window.addEventListener('resize', cbs.resizeHandler)
-    props.ee.emitEvent(`${props.currentBreakpoint}Enter`)
+    props.ee.emitEvent('change', [{
+      newBreakpoint: props.currentBreakpoint,
+      previousBreakpoint: null
+    }])
 
     props.isEnabled = true
   }
