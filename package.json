@@ -1,10 +1,8 @@
 {
   "name": "savnac-breakpoint",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "savnac breakpoint functionality",
   "main": "build/savnac-breakpoint.js",
-  "module": "index",
-  "jsnext:main": "index",
   "scripts": {
     "build": "rm -rf build bundle.js && mkdir build && rollup -c && rollup -f umd -o build/savnac-breakpoint.js -- bundle.js && rm bundle.js && uglifyjs build/savnac-breakpoint.js -c -m -o build/savnac-breakpoint.min.js "
   },
