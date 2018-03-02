@@ -7,20 +7,12 @@
 const debounce = require('lodash.debounce')
 const EventEmitter = require('wolfy87-eventemitter')
 
-const DEFAULT_OPTS = {
-  leading: true
-}
-
-const breakpoint = (opts = {}) => {
+const breakpoint = () => {
   const props = {
     currentBreakpoint: checkBreakpoint(),
     isMobile: null,
     isMobileDevice: 'ontouchstart' in window,
-    ee: new EventEmitter(),
-    opts: Object.assign(
-      DEFAULT_OPTS,
-      opts
-    )
+    ee: new EventEmitter()
   }
 
   const SIZES = {
@@ -69,9 +61,17 @@ const breakpoint = (opts = {}) => {
     props.isMobile = checkMobileBp()
   }
 
-  const on = (listener, callback) => {
+  const on = (listener, callback, opts = {}) => {
     if (eeEvents.includes(listener)) {
       props.ee.addListener(listener, callback)
+
+      // option to execute the callback immediately after adding listener
+      if (opts.leading) {
+        callback({
+          newBreakpoint: props.currentBreakpoint,
+          previousBreakpoint: null
+        })
+      }
     } else {
       logListenerError(listener)
     }
@@ -105,14 +105,6 @@ const breakpoint = (opts = {}) => {
     cbs.resizeHandler = debounce(onResize, 100)
 
     window.addEventListener('resize', cbs.resizeHandler)
-
-    if (props.opts.leading) {
-      props.ee.emitEvent('change', [{
-        newBreakpoint: props.currentBreakpoint,
-        previousBreakpoint: null
-      }])
-    }
-
     props.isEnabled = true
   }
 
