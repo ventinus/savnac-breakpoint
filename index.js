@@ -7,12 +7,20 @@
 const debounce = require('lodash.debounce')
 const EventEmitter = require('wolfy87-eventemitter')
 
-const breakpoint = () => {
+const DEFAULT_OPTS = {
+  leading: true
+}
+
+const breakpoint = (opts = {}) => {
   const props = {
     currentBreakpoint: checkBreakpoint(),
     isMobile: null,
     isMobileDevice: 'ontouchstart' in window,
-    ee: new EventEmitter()
+    ee: new EventEmitter(),
+    opts: Object.assign(
+      DEFAULT_OPTS,
+      opts
+    )
   }
 
   const SIZES = {
@@ -97,10 +105,13 @@ const breakpoint = () => {
     cbs.resizeHandler = debounce(onResize, 100)
 
     window.addEventListener('resize', cbs.resizeHandler)
-    props.ee.emitEvent('change', [{
-      newBreakpoint: props.currentBreakpoint,
-      previousBreakpoint: null
-    }])
+
+    if (props.opts.leading) {
+      props.ee.emitEvent('change', [{
+        newBreakpoint: props.currentBreakpoint,
+        previousBreakpoint: null
+      }])
+    }
 
     props.isEnabled = true
   }
