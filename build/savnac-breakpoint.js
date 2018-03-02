@@ -13,19 +13,12 @@
 var debounce = require('lodash.debounce');
 var EventEmitter = require('wolfy87-eventemitter');
 
-var DEFAULT_OPTS = {
-  leading: true
-};
-
 var breakpoint = function breakpoint() {
-  var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
   var props = {
     currentBreakpoint: checkBreakpoint(),
     isMobile: null,
     isMobileDevice: 'ontouchstart' in window,
-    ee: new EventEmitter(),
-    opts: Object.assign(DEFAULT_OPTS, opts)
+    ee: new EventEmitter()
   };
 
   var SIZES = {
@@ -77,8 +70,18 @@ var breakpoint = function breakpoint() {
   };
 
   var on = function on(listener, callback) {
+    var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
     if (eeEvents.includes(listener)) {
       props.ee.addListener(listener, callback);
+
+      // option to execute the callback immediately after adding listener
+      if (opts.leading) {
+        callback({
+          newBreakpoint: props.currentBreakpoint,
+          previousBreakpoint: null
+        });
+      }
     } else {
       logListenerError(listener);
     }
@@ -112,14 +115,6 @@ var breakpoint = function breakpoint() {
     cbs.resizeHandler = debounce(onResize, 100);
 
     window.addEventListener('resize', cbs.resizeHandler);
-
-    if (props.opts.leading) {
-      props.ee.emitEvent('change', [{
-        newBreakpoint: props.currentBreakpoint,
-        previousBreakpoint: null
-      }]);
-    }
-
     props.isEnabled = true;
   };
 
