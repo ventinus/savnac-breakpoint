@@ -9,9 +9,9 @@ const EventEmitter = require('wolfy87-eventemitter')
 
 const breakpoint = () => {
   const props = {
-    currentBreakpoint: checkBreakpoint(),
+    currentBreakpoint: '',
     isMobile: null,
-    isMobileDevice: 'ontouchstart' in window,
+    isMobileDevice: false,
     ee: new EventEmitter()
   }
 
@@ -26,27 +26,24 @@ const breakpoint = () => {
 
   const cbs = {}
 
-  props.isMobile = checkMobileBp()
-  document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch')
-
   // ------------------------------------------------
   // grabs the document body :before pseudo element content.
   // ------------------------------------------------
-  function checkBreakpoint() {
+  const checkBreakpoint = () => {
     return window.getComputedStyle(document.body, ':before').getPropertyValue('content').replace(/"/g, '')
   }
 
   // ------------------------------------------------
   // checks if the currentBreakpoint is 'sm' or 'md'. returns a boolean
   // ------------------------------------------------
-  function checkMobileBp() {
+  const checkMobileBp = () => {
     return isBreakpoint(SIZES.sm) || isBreakpoint(SIZES.md)
   }
 
   // ------------------------------------------------
   // checks if the currentBreakpoint is whatever is passed
   // ------------------------------------------------
-  function isBreakpoint(bp) { return props.currentBreakpoint === bp }
+  const isBreakpoint = (bp) => props.currentBreakpoint === bp
 
   // ------------------------------------------------
   // Emits change, enter, and exit events. Updates props with new breakpoint data
@@ -106,8 +103,13 @@ const breakpoint = () => {
 
   const enable = () => {
     if (props.isEnabled) return
-    cbs.resizeHandler = debounce(onResize, 100)
 
+    props.currentBreakpoint = checkBreakpoint()
+    props.isMobileDevice = 'ontouchstart' in window
+    props.isMobile = checkMobileBp()
+    document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch')
+
+    cbs.resizeHandler = debounce(onResize, 100)
     window.addEventListener('resize', cbs.resizeHandler)
     props.isEnabled = true
   }
