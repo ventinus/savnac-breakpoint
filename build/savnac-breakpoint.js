@@ -72,6 +72,10 @@ var breakpoint = function breakpoint() {
   var on = function on(listener, callback) {
     var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
+    if (props.currentBreakpoint.length === 0) {
+      props.currentBreakpoint = checkBreakpoint();
+    }
+
     if (eeEvents.includes(listener)) {
       props.ee.addListener(listener, callback);
 

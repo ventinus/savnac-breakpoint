@@ -62,6 +62,10 @@ const breakpoint = () => {
   }
 
   const on = (listener, callback, opts = {}) => {
+    if (props.currentBreakpoint.length === 0) {
+      props.currentBreakpoint = checkBreakpoint()
+    }
+
     if (eeEvents.includes(listener)) {
       props.ee.addListener(listener, callback)
 
