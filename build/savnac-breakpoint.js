@@ -10,7 +10,6 @@
 // Requires css setup to set content of 'sm', 'md', 'lg', 'xl' on body :before
 //
 // ==================================================
-var debounce = require('lodash.debounce');
 var EventEmitter = require('wolfy87-eventemitter');
 var _ = require('lodash');
 
@@ -120,7 +119,7 @@ var breakpoint = function breakpoint() {
     props.isMobile = checkMobileBp();
     document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch');
 
-    cbs.resizeHandler = debounce(onResize, 100);
+    cbs.resizeHandler = _.debounce(onResize, 100);
     window.addEventListener('resize', cbs.resizeHandler);
     props.isEnabled = true;
   };
