@@ -4,8 +4,8 @@
 // Requires css setup to set content of 'sm', 'md', 'lg', 'xl' on body :before
 //
 // ==================================================
-const debounce = require('lodash.debounce')
 const EventEmitter = require('wolfy87-eventemitter')
+const _ = require('lodash')
 
 const breakpoint = () => {
   const props = {
@@ -63,7 +63,7 @@ const breakpoint = () => {
       props.currentBreakpoint = checkBreakpoint()
     }
 
-    if (eeEvents.includes(listener)) {
+    if (_.includes(eeEvents, listener)) {
       props.ee.addListener(listener, callback)
 
       // option to execute the callback immediately after adding listener
@@ -79,7 +79,7 @@ const breakpoint = () => {
   }
 
   const off = (listener, callback) => {
-    if (eeEvents.includes(listener)) {
+    if (_.includes(eeEvents, listener)) {
       props.ee.removeListener(listener, callback)
     } else {
       logListenerError(listener)
@@ -109,7 +109,7 @@ const breakpoint = () => {
     props.isMobile = checkMobileBp()
     document.documentElement.classList.add(props.isMobileDevice ? 'touch' : 'no-touch')
 
-    cbs.resizeHandler = debounce(onResize, 100)
+    cbs.resizeHandler = _.debounce(onResize, 100)
     window.addEventListener('resize', cbs.resizeHandler)
     props.isEnabled = true
   }

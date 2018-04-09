@@ -12,6 +12,7 @@
 // ==================================================
 var debounce = require('lodash.debounce');
 var EventEmitter = require('wolfy87-eventemitter');
+var _ = require('lodash');
 
 var breakpoint = function breakpoint() {
   var props = {
@@ -73,7 +74,7 @@ var breakpoint = function breakpoint() {
       props.currentBreakpoint = checkBreakpoint();
     }
 
-    if (eeEvents.includes(listener)) {
+    if (_.includes(eeEvents, listener)) {
       props.ee.addListener(listener, callback);
 
       // option to execute the callback immediately after adding listener
@@ -89,7 +90,7 @@ var breakpoint = function breakpoint() {
   };
 
   var off = function off(listener, callback) {
-    if (eeEvents.includes(listener)) {
+    if (_.includes(eeEvents, listener)) {
       props.ee.removeListener(listener, callback);
     } else {
       logListenerError(listener);
